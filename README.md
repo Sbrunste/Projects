@@ -1,3 +1,2 @@
 # EcologyMasterResearch.R
-# RPN
-# Sample Code 
+# RPN Calculator
