@@ -76,7 +76,7 @@ print("The total number of duplicates on this page is:")
 print(number_of_duplicates)
 
 #Importing area code key matcher
-areaCodeDictionary <- read.csv("~/Desktop/Job Applications/Trooly/AreaCode.txt", sep=";", dec=",")
+areaCodeDictionary <- read.csv("~/Desktop/AreaCode.txt", sep=";", dec=",")
 
 #Changing description of county from factor to character
 areaCodeDictionary$Description <- as.character(areaCodeDictionary$Description)
