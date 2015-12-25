@@ -1,4 +1,4 @@
-/*Scott Brunstein, SID 997429257*/
+/*Scott Brunstein*/
 //rpn.cpp
 //Create a Reverse Polish Notation Calculator
 
