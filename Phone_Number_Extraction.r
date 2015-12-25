@@ -3,11 +3,13 @@
 
 # Given a URL as input, write a program that finds all the phone numbers that appear on the webpage given by the URL. This is an open-ended question, where you would have to identify various possible patterns of phone numbers and extract numbers based on patterns. The quality of the program will be judged based on the number of correct and number of incorrect phone numbers your program extracts.
 
-#############################################################################################Original website:
-#Choose a website
-
 ############################################################################################
+#PROGRAM STARTS HERE
+
+install.packages("stringr")
+install.packages("lattice")
 library(stringr) #Used for stringsplitting functions
+library(lattice) #For histogram of counties represented
 
 #Enter URL link inside the quotation marks
 url <- readLines("http://www.whitepages.com/phone/1-757-455-4500") 
@@ -61,30 +63,23 @@ for (i in 1:length(numberChars))
   areaCode <- append(areaCode, areaVals)
 }
 areaCode <- as.integer(areaCode)
-#areaCode
 
 #Putting all the data into a data frame that includes the numbers, area code, and whether or not it is a duplicate
 data_with_duplicates <- data.frame(phoneNumber, areaCode, duplicates)
 
 #Taking out the duplicates
 data <- subset(data_with_duplicates, data_with_duplicates[ , 3] == 'FALSE')
-#data
 
 print("The total number of phone numbers on this page is:")
 print(length(phoneNumber))
 print("The total number of duplicates on this page is:")
 print(number_of_duplicates)
-print("The list of total unique numbers on this webpage is:")
-#phone_Numbers
 
 #Importing area code key matcher
 areaCodeDictionary <- read.csv("~/Desktop/Job Applications/Trooly/AreaCode.txt", sep=";", dec=",")
-#areaCodeRegion <- read.csv("~/Desktop/Job Applications/Trooly/AreaCodeDefinitionsEXCEL.csv")
 
 #Changing description of county from factor to character
 areaCodeDictionary$Description <- as.character(areaCodeDictionary$Description)
-#areaCodeDictionary["Region"] <- areaCodeRegion$Region
-
 
 #Matching up the correct county area with the area code for each phone number
 #If there is no matching county, I will append the value "No Match" and take that value out in the data frame, as this indicates the initial regular expression just found a string of 10 numbers that happened to not be a phone number
@@ -97,24 +92,27 @@ for (i in 1:length(data$areaCode))
   {
     areaCodeVal <- which(areaCodeDictionary$Area.Code %in% data$areaCode[i])
     indexVal <- areaCodeDictionary$Description[areaCodeVal]
-    #indexRegion <- areaCodeDictionary$Region[areaCodeVal]
     county <- append(county, indexVal)
-    #finalRegion <- append(finalRegion,indexVal)
   }
   else
   {
     county <- append(county, noMatch)
   }
 }
-#county
 
 #Adding the county to the data frame and taking out the duplicates column since there are no longer any duplicates
 data["County"] <- county
-#data["Region"] <- finalRegion
 data$duplicates <- NULL
 
 data <- subset(data, County != "No Match")
 View(data)
 
 #Some simple statistics
-histogram(as.factor(data$County))
+plot(as.factor(data$County), main = "Barplot of counties represented by area codes", xlab = "Counties", ylab = "Number of phone numbers")
+histogram(as.factor(data$County), main = "Histogram of counties represented by area codes", xlab = "Counties")
+pie(table(data$County), main = "Pie chart of counties")
+
+print("The following county has the most area codes present on this page:")
+which.max(table(data$County))
+print("The number of phone numbers from this county are:")
+max(table(data$County))
